@@ -7,7 +7,7 @@ Fore more details, please contact <germano.cneto@usp.br>
 
 ## Current focus
 
-Some of the functions can be adapted for different cultures, that is, they are of generic use. However, this project aims to develop functions aimed at maize culture, with emphasis on its use in tropical conditions. We will program routines aiming the prediction of the phenotype-environmental profile and, in the future, its integration in protocols of genomic prediction and field phenotyping.
+Some of the functions can be adapted for a wide range of crops (they arent crop-specific), that is, they are of generic use. However, this project aims to develop functions aimed at maize culture, with emphasis on its use in tropical conditions. We will program routines aiming the prediction of the phenotype-environmental profile and, in the future, its integration in protocols of genomic prediction and field phenotyping.
 
 If you are interested in this subject, feel free to contact us with a view to contributing to this project.
 
