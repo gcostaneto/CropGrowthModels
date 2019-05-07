@@ -1,0 +1,29 @@
+#'-----------------------------------------------------------------------------------
+# phenological stage by day
+#'-----------------------------------------------------------------------------------
+stage.by.dae = function(.dae, .breaks, .names){
+  if(any(is.null(c(.dae,.breaks,.names)))){stop(".dae, .breaks or .names is missing")}
+  pstage = cut(x = .dae,breaks=.breaks,right = T)
+  levels(pstage) = .names
+  return(pstage)
+}
+
+#'-----------------------------------------------------------------------------------
+## root development interacing with soil
+#'-----------------------------------------------------------------------------------
+root.by.stage = function(.dae,            # crop phenologyc stage (days)
+                         .iniroot=NULL,     # root for the refered stage (root = 1 if root is null)
+                         .maxroot=NULL,
+                         .rootgrowth=NULL){
+  
+  if(is.null(.dae)){stop("missing stage dae")}
+  if(is.null(.iniroot)){.iniroot = 5E1}
+  if(is.null(.maxroot)){.maxroot = 5E2}
+  if(is.null(.rootgrowth)){.rootgrowth = 8}
+  ndays = length(.dae)
+  
+  actual.root = .iniroot + .rootgrowth*.dae
+  actual.root = ifelse(actual.root > .maxroot,.maxroot,actual.root)
+  return(actual.root)
+  
+}
