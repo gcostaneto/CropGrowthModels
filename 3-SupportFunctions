@@ -1,0 +1,42 @@
+cropConv = function(x){ return(t(data.frame(x[,-1],row.names = 1)))}
+
+
+## value pressure deficit
+vpd = function(RH, es){
+  return(1-(RH/100)*es)
+}
+
+# old
+e_v = function(RH,es){
+  return((RH*es)/100)
+}
+
+
+# teten equation for saturarion temperature
+e_Teten = function(Tmed){
+  if(Tmed > 0){es = .6108*10^((7.5*Tmed)/(237.3+Tmed))}
+  if(Tmed < 0){es = .6108*10^((9.5*Tmed)/(265.5+Tmed))}
+  return(es)
+}
+
+
+# Prof. Quirin's equation for saturation temperature
+es = function(t1=NULL,t2=NULL,t3=NULL,Tmed=NULL){
+  if(is.null(Tmed)){stop("missing Tmed")}
+  if(is.null(t1)){t1 = .61078}
+  if(is.null(t2)){t2 = 17.27}
+  if(is.null(t3)){t3 = 237.3}
+  return(t1*exp((t2*Tmed)/(t3+Tmed)))
+}
+
+
+
+# Prof. Quirin's Equation for real soil evaporation
+eva_r = function(e_pot=NULL, # Potential evaporation (see eva_p function)
+                 Wa=NULL,     # Actual Water content (day i, cubic meters)
+                 Wfc=NULL,    # Field capacity water content (cubic meters)
+                 a=NULL)      # Empirical constant (default a = 20)
+{
+  if(is.null(a)){a = 20}
+  return(e_pot*exp(a*(Wa-Wfc)))
+}
