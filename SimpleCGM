@@ -2,6 +2,10 @@
 # Generic Crop Growth Model
 ########################################################################################################
 
+source("https://raw.githubusercontent.com/gcostaneto/CropGrowthModels/master/1-Phenology")
+source("https://raw.githubusercontent.com/gcostaneto/CropGrowthModels/master/2-Biomass")
+source("https://raw.githubusercontent.com/gcostaneto/CropGrowthModels/master/3-SoilWaterBal")
+
 simple.CGM = function(cropParam, 
                       weatherParam,
                       soilParam = NULL,
