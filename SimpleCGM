@@ -1,0 +1,98 @@
+########################################################################################################
+# Generic Crop Growth Model
+########################################################################################################
+
+source("https://raw.githubusercontent.com/gcostaneto/CropGrowthModels/master/1-Phenology")
+source("https://github.com/gcostaneto/CropGrowthModels/edit/master/2-Biomass")
+source("https://github.com/gcostaneto/CropGrowthModels/edit/master/3-SoilWaterBal")
+
+simple.CGM = function(cropParam, 
+                      weatherParam,
+                      soilParam = NULL,
+                      sdate, level="Y"){
+  #' ----------------------------------------------------------------------
+  #' Checking model inputs
+  #' ----------------------------------------------------------------------
+  if(level %in% "Yw"){
+    if(is.null(soilParam)){stop("Missing soil parameters")}}
+  #if(!is.Date(sdate)){stop("insert a start simulation date")}
+  crp = cropConv(x = cropParam)
+  Y = B  = NA
+  #start = sdate
+  #end = start + crp[8]
+  #TimeSimulation = seq(start,end,by=1)
+  #' ----------------------------------------------------------------------
+  #' time steps
+  #' ----------------------------------------------------------------------
+  DAE = 1:crp[8]
+  start = yday(sdate)
+  i = which(wth$date %in% as_date("2013-01-09"))
+  weatherParam = weatherParam[i:(i+crp[8]-1),]
+  #' ----------------------------------------------------------------------
+  #' leaf growth
+  #' ----------------------------------------------------------------------
+  leaf = leaf.curve(.endKc = crp[c(10,12,13)],
+                    .lenghPhase = crp[5:8],
+                    .dae = DAE, .digits=4)
+  #' ----------------------------------------------------------------------
+  #' Temperature factor
+  #' ----------------------------------------------------------------------
+  if(level %in% "Y"){fT = rep(1,crp[8])} # obs: p/ Y; f = 1
+  if(level %in% c("Yp","Yw")){           # obs: p/ Yp or Yw, compute f
+    
+    fT    = FTar(Tbase1 = crp[1],
+                 Tbase2 = crp[2],
+                 Topt1  = crp[3],
+                 Topt2  = crp[4],
+                 weatherParam$Tmed)}
+  #' ----------------------------------------------------------------------
+  #' aparent photossinthetic radiation
+  #' ----------------------------------------------------------------------
+  aP   =  suppressWarnings(aPAR(K = crp[19],
+                                fraction = .5,
+                                IAF = leaf[,2],
+                                Srad = weatherParam$Rad))
+  #' ----------------------------------------------------------------------
+  #' Potential yield
+  #' ----------------------------------------------------------------------
+  Yp = Y.prod(  RUE  = crp[9],
+                IC   = crp[17],
+                U    = crp[18],
+                CropCycle = crp[8],
+                aPAR = aP,
+                FTar = fT,
+                sdate = sdate)
+  
+  #' -------------------------------------------------------------------------------------
+  #' Water balance Module
+  #' -------------------------------------------------------------------------------------
+  # potential evapotranspiration
+  
+  ETp = ET.PristleyTaylor(Rn = weatherParam$Rn,Tmed = weatherParam$Tmed)
+  
+  #' Water-limited reduction factor (f)
+  #' -------------------------------------------------------------------------------------
+  if((level %in% c("Y","Yp"))){f = rep(1,crp[8])}
+  if(level %in% "Yw"){
+    
+   SWB = cropWB(WCini = soilParam[2],WCfc = soilParam[4],WCcr = crp[23],
+              WCwp  = soilParam[3],thi = soilParam[5],
+              ETp   = weatherParam$ETp, 
+              P     =  weatherParam$P,
+              CropCycle = crp[8])
+   
+   f = SWB[,5]
+  }
+  #' ----------------------------------------------------------------------
+  #' Biomass production
+  #' ----------------------------------------------------------------------
+    B = Yp[[1]] * f
+    Y = B[crp[8],1] * crp[17] #' OBS: if level == "Ywl (water limited)
+    
+  #' Returning simulation output
+  #' ----------------------------------------------------------------------
+  return(list(ProductionLevel=level,
+              dryMatter = data.frame(LAI=leaf[,2],B,f=f)[c(3,1,4,2)],
+              Yield = Y,
+              res_env = data.frame(Yp[[3]][1:crp[8],],FWs=f,ETa = SWB[,3])))
+}
