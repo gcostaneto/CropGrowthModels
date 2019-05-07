@@ -1,1 +1,100 @@
+#  Imput soil profiles (check inputs and provide new or complete missing values)
+soil.build = function(Nlayer=3,WCini=NULL,WCwp=NULL, WCfc=NULL,thi=NULL){
+  
+  if(Nlayer > 20){stop("maximum of 20 layers per soil profile")}
+  if(is.null(WCwp)){WCwp = rep(.14,Nlayer)}
+  if(is.null(WCfc)){WCfc = rep(.32,Nlayer)}
+  if(is.null(thi)){thi = rep(250,Nlayer)}
+  if(is.null(WCini)){WCini = rep(.20,Nlayer)}
+  
+  if(!length(WCwp) == Nlayer){WCwp = c(WCwp,rep(WCwp[length(WCwp)],Nlayer-length(WCwp)))}
+  if(!length(WCfc) == Nlayer){WCfc = c(WCfc,rep(WCfc[length(WCfc)],Nlayer-length(WCfc)))}
+  if(!length(WCini) == Nlayer){WCini = c(WCini,rep(WCini[length(WCini)],Nlayer-length(WCini)))}
+  if(!length(thi) == Nlayer){thi = c(thi,rep(thi[length(thi)],Nlayer-length(thi)))}
+  return(list(thi = thi,WCfc = WCfc,WCini= WCini,WCwp = WCwp,Nlayer = Nlayer))
+}
 
+
+# fraction of limited soil water content (f)
+FSER = function(.WCwp,.WCfc,.WCa,.WCcr){
+  a="do"
+  if(is.null(.WCcr)){.WCcr = .45*.WCfc}
+  if(.WCa <= .WCwp){f = 0; a="dead"}
+  if(.WCa >= .WCcr){f = 1; a = "opt"}
+  if(a%in%"do"){
+    f = (.WCa - .WCwp)/(.WCcr-.WCwp)
+  }
+    return(f)
+  }
+
+# computando direto a transpiracao real
+## Actual transpiration computed by soil water content fraction (f)
+# .WCcr = critical soil water content (crop specific)
+TRaf = function(.TRp = NULL,
+                .WCac = NULL,
+                .WCfc = NULL,
+                .WCcr = NULL){
+  
+  if(.WCac >= .WCcr){return(.TRp)}
+  if(.WCac < .WCcr){return(FSER(.WCwp,.WCfc,.WCa)*.TRp)}
+  
+}
+
+#'-----------------------------------------------------------------------------------------------------------------
+# support function for water balance
+#'-----------------------------------------------------------------------------------------------------------------
+WatBal = function(WCini, # conteudo de agua inicial
+                WCfc,  # conteudo de agua na capacidade de campo
+                a,thi,
+                P,
+                WCwp,
+                WCcr=NULL,
+                ETp,
+                I=NULL
+){
+  
+  if(is.null(I)){I=0}     # sem irrigacao, nao soma essa entrada
+  .Exc  = .Arm = NULL
+  .Armx =  WCfc*thi
+  .WCa  = WCini
+  .ArmA = .WCa * thi
+  
+  # computing actual crop transpiration
+  .f = FSER(.WCwp = WCwp,.WCfc = WCfc,.WCa = .WCa,.WCcr = WCcr)
+  .ETa = .f*ETp
+  #.eR = eva_r(e_pot = .eP,Wa = .WCa,a = a,Wfc = WCfc[1])
+  .Arm = .ArmA + P + I - .ETa
+  # .TRa = TRa(TRp = TRp,Wa = .WCa,a = a,Wfc = WCfc[1]) # old
+  exc = .Arm - .Armx
+  .Arm = ifelse(.Arm < 0, 0,ifelse(.Arm > .Armx,.Armx,.Arm))
+  .Exc = ifelse(exc>0,exc,0)
+  .WCa = .Arm/thi
+  return(list(PP=.Exc,ARM=.Arm,WCa=.WCa,ARMmx=.Armx,ETp=ETp,ETa=.ETa,f=.f,P=P,I=I,thi=thi))}
+  
+  
+  #'-----------------------------------------------------------------------------------------------------------------
+  ## Crop Soil Water Balance (Bucket)
+  #'-----------------------------------------------------------------------------------------------------------------
+  cropWB = function(WCini,
+                  WCfc,
+                  WCwp, 
+                  WCcr = NULL,
+                  thi,
+                  P, 
+                  ETp = NULL, 
+                  I = NULL, 
+                  CropCycle){
+  
+  output = data.frame(Wi=NA,ARM=NA,ETa = NA, P = NA,f=NA)
+  for(j in 1:120){
+    wb = WatBal(WCini = Wi,WCfc = .28,WCwp = .1,thi=500,a=20,WCcr = .19,ETp = wth$ETp[j], P=wth$P[j])
+    output[j,1] = wb$WCa
+    output[j,2] = wb$ARM
+    output[j,3] = wb$ETa
+    output[j,4] = wb$P
+    output[j,5] = wb$f
+    
+  }
+  return(output)}
+
+  
