@@ -11,19 +11,3 @@ Some of the functions can be adapted for a wide range of crops (they arent crop-
 
 If you are interested in this subject, feel free to contact us with a view to contributing to this project.
 
-## Modules
-
-### Soil-water balance module
-
-### Crop growth and biomass accumulation modules
-
-### Crop Development Stage (DVS) module
-
-### Leaf Area Growth 
-
-
-### Genomic Prediction
-
-#### Reaction Norm Models
-
-#### Environmental Markers
