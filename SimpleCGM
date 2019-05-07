@@ -77,7 +77,7 @@ simple.CGM = function(cropParam,
     
    SWB = cropWB(WCini = soilParam[2],WCfc = soilParam[4],WCcr = crp[23],
               WCwp  = soilParam[3],thi = soilParam[5],
-              ETp   = weatherParam$ETp, 
+              ETp   = ETp, 
               P     =  weatherParam$P,
               CropCycle = crp[8])
    
