@@ -102,8 +102,8 @@ cropWB = function(WCini,
                   CropCycle){
   
   output = data.frame(Wi=NA,ARM=NA,ETa = NA, P = NA,f=NA)
-  for(j in 1:120){
-    wb = WatBal(WCini = Wi,WCfc = WCfc,WCwp = WCwp,thi=thi,a=20,WCcr = WCcr,ETp = ETp[j], P=P[j])
+  for(j in 1:CropCycle){
+    wb = WatBal(WCini = WCini,WCfc = WCfc,WCwp = WCwp,thi=thi,a=20,WCcr = WCcr,ETp = ETp[j], P=P[j])
     output[j,1] = wb$WCa
     output[j,2] = wb$ARM
     output[j,3] = wb$ETa
