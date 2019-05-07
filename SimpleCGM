@@ -93,6 +93,11 @@ simple.CGM = function(cropParam,
     
   #' Returning simulation output
   #' ----------------------------------------------------------------------
+  if((level %in% c("Y","Yp"))){ return(list(ProductionLevel=level,
+              dryMatter = data.frame(LAI=leaf[,2],B,f=f)[c(3,1,4,2)],
+              Yield = Y,
+              res_env = data.frame(Yp[[3]][1:crp[8],],FWs=f)))}
+              
   return(list(ProductionLevel=level,
               dryMatter = data.frame(LAI=leaf[,2],B,f=f)[c(3,1,4,2)],
               Yield = Y,
