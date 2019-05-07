@@ -1,4 +1,6 @@
+#'-----------------------------------------------------------------------------------------------------------------
 #  Imput soil profiles (check inputs and provide new or complete missing values)
+#'-----------------------------------------------------------------------------------------------------------------
 soil.build = function(Nlayer=3,WCini=NULL,WCwp=NULL, WCfc=NULL,thi=NULL){
   
   if(Nlayer > 20){stop("maximum of 20 layers per soil profile")}
@@ -14,8 +16,9 @@ soil.build = function(Nlayer=3,WCini=NULL,WCwp=NULL, WCfc=NULL,thi=NULL){
   return(list(thi = thi,WCfc = WCfc,WCini= WCini,WCwp = WCwp,Nlayer = Nlayer))
 }
 
-
+#'-----------------------------------------------------------------------------------------------------------------
 # fraction of limited soil water content (f)
+#'-----------------------------------------------------------------------------------------------------------------
 FSER = function(.WCwp,.WCfc,.WCa,.WCcr){
   a="do"
   if(is.null(.WCcr)){.WCcr = .45*.WCfc}
@@ -27,9 +30,10 @@ FSER = function(.WCwp,.WCfc,.WCa,.WCcr){
     return(f)
   }
 
-# computando direto a transpiracao real
+#'-----------------------------------------------------------------------------------------------------------------
 ## Actual transpiration computed by soil water content fraction (f)
 # .WCcr = critical soil water content (crop specific)
+#'-----------------------------------------------------------------------------------------------------------------
 TRaf = function(.TRp = NULL,
                 .WCac = NULL,
                 .WCfc = NULL,
@@ -53,7 +57,7 @@ WatBal = function(WCini, # conteudo de agua inicial
                 I=NULL
 ){
   
-  if(is.null(I)){I=0}     # sem irrigacao, nao soma essa entrada
+  if(is.null(I)){I=0}     # if Irriation is NULL, I = 0
   .Exc  = .Arm = NULL
   .Armx =  WCfc*thi
   .WCa  = WCini
@@ -71,7 +75,6 @@ WatBal = function(WCini, # conteudo de agua inicial
   .WCa = .Arm/thi
   return(list(PP=.Exc,ARM=.Arm,WCa=.WCa,ARMmx=.Armx,ETp=ETp,ETa=.ETa,f=.f,P=P,I=I,thi=thi))}
   
-  
   #'-----------------------------------------------------------------------------------------------------------------
   ## Crop Soil Water Balance (Bucket)
   #'-----------------------------------------------------------------------------------------------------------------
@@ -86,7 +89,7 @@ WatBal = function(WCini, # conteudo de agua inicial
                   CropCycle){
   
   output = data.frame(Wi=NA,ARM=NA,ETa = NA, P = NA,f=NA)
-  for(j in 1:120){
+  for(j in 1:CropCycle){
     wb = WatBal(WCini = Wi,WCfc = .28,WCwp = .1,thi=500,a=20,WCcr = .19,ETp = wth$ETp[j], P=wth$P[j])
     output[j,1] = wb$WCa
     output[j,2] = wb$ARM
