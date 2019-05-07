@@ -1,7 +1,7 @@
 # CropGrowthModels
 
 ## Project Description
-Some functions that I have been developing to implement crop growth models in R. The models are based on scritps originally programmed in FORTRAN and made available by professors Fábio R. Marin (ESALQ / USP) and Quirijn de Jong van Lier (ESALQ / CENA-USP ) in the lecture "Crop Growth Models". This project also includes unpublished functions, many of which are still under development and validation. Any suggestions, tips and help are welcome.
+Some functions that I have been developing to implement crop growth models in R. The models are based on scritps originally programmed in FORTRAN and made available by professors Fábio R. Marin (ESALQ / USP) and Quirijn de Jong van Lier (ESALQ / CENA-USP ) in the lecture "1100222-2019 - Crop Growth Models". This project also includes unpublished functions, many of which are still under development and validation. Any suggestions, tips and help are welcome.
 
 Fore more details, please contact us at <germano.cneto@usp.br> (Germano Costa Neto, PhD student) or <roberto.neto@usp.br> (Professor Roberto Fritsche Neto, ESALQ-USP)
 
