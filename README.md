@@ -10,3 +10,6 @@ Some of the functions can be adapted for a wide range of crops (they arent crop-
 
 If you are interested in this subject, feel free to contact us with a view to contributing to this project.
 
+## Next Steps
+Next steps will include the integration of CGMs with whole genome predictions (using whole-genome SNPs) and its applications for breeding decision making under environmental-limited conditions
+
