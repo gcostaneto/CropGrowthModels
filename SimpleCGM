@@ -16,6 +16,8 @@ simple.CGM = function(cropParam,
   if(level %in% "Yw"){
     if(is.null(soilParam)){stop("Missing soil parameters")}}
   #if(!is.Date(sdate)){stop("insert a start simulation date")}
+  require(lubridate)
+  require(chron)
   crp = cropConv(x = cropParam)
   Y = B  = NA
   #start = sdate
