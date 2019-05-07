@@ -28,7 +28,7 @@ simple.CGM = function(cropParam,
   #' ----------------------------------------------------------------------
   DAE = 1:crp[8]
   start = yday(sdate)
-  i = which(wth$date %in% as_date("2013-01-09"))
+  i = which(wth$date %in% sdate)
   weatherParam = weatherParam[i:(i+crp[8]-1),]
   #' ----------------------------------------------------------------------
   #' leaf growth
